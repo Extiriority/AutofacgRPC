@@ -68,6 +68,8 @@ namespace Autofac.Test
                 _registry = registry;
             }
 
+            public bool TryGetRegistration(Service service, out IComponentRegistration registration) => throw new NotImplementedException();
+
             public bool IsRegistered(Service service)
             {
                 return _registry.IsRegistered(service);
@@ -76,11 +78,6 @@ namespace Autofac.Test
             public IEnumerable<IComponentRegistration> RegistrationsFor(Service service)
             {
                 return _registry.RegistrationsFor(service);
-            }
-
-            public bool TryGetRegistration(Service service, [NotNullWhen(true)] out IComponentRegistration registration)
-            {
-                return _registry.TryGetRegistration(service, out registration);
             }
         }
     }

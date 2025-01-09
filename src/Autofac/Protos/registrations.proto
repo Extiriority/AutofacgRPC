@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option csharp_namespace = "Autofac.Grpc";
+
+service Registrations {
+    rpc SendRegistrationInfo (RegistrationRequest) returns (RegistrationResponse);
+}
+
+message RegistrationRequest {
+    string id = 1;
+    string name = 2;
+    string service = 3;
+    repeated string implementations = 4;
+    repeated string dependencies = 5;
+}
+
+message RegistrationResponse {
+    string status = 1;
+}
