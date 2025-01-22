@@ -8,7 +8,6 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Threading.Tasks;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
@@ -17,10 +16,7 @@ using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Features.Scanning;
-using Autofac.Grpc;
 using Autofac.Util;
-using Grpc;
-using Grpc.Net.Client;
 
 namespace Autofac
 {
@@ -129,16 +125,6 @@ namespace Autofac
             }
 
             var rb = RegistrationBuilder.ForType<TImplementer>();
-
-            RegistrationInfoManager.Instance.UpdateRegistrationInfo(
-                typeof(TImplementer).Name,
-                typeof(TImplementer).Assembly.Location,
-                typeof(TImplementer).Name,
-                new List<string>(),
-                new List<string>());
-
-            // Call the gRPC method asynchronously
-            RegistrationModule.SendRegistrationInfoAsync().ConfigureAwait(false);
 
             rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => RegistrationBuilder.RegisterSingleComponent(cr, rb));
 

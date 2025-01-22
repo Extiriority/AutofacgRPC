@@ -27,7 +27,7 @@ namespace Autofac.Util
             {
                 return;
             }
-
+            Console.WriteLine("Dispose main");
             Dispose(true);
             GC.SuppressFinalize(this);
         }

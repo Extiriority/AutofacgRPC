@@ -7,9 +7,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Registration;
+using Grpc;
 
 namespace Autofac
 {
@@ -337,9 +339,52 @@ namespace Autofac
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        public static object Resolve(this IComponentContext context, Type serviceType, IEnumerable<Parameter> parameters)
+        public static async Task<object> Resolve(this IComponentContext context, Type serviceType,
+            IEnumerable<Parameter> parameters)
         {
+            // TODO: Possible solution with resolve, Send my data to my Visualizer.
+
+            foreach (var registration in context.ComponentRegistry.Registrations)
+            {
+                var dependencies = registration.Activator.LimitType.GetConstructors()
+                    .SelectMany(c => c.GetParameters())
+                    .Select(p =>
+                        p.ParameterType.IsGenericType && p.ParameterType.GetGenericTypeDefinition() == typeof(Func<,>)
+                            ? p.ParameterType.GetGenericArguments()[1].Name
+                            : p.ParameterType.Name)
+                    .ToList();
+
+                RegistrationInfoManager.Instance.UpdateRegistrationInfo(
+                    registration.Id,
+                    ExtractName(registration.Services.ToList()[0].Description),
+                    registration.Services.ToList()[0].Description,
+                    registration.Sharing == InstanceSharing.Shared ? "Singleton" : "InstancePerDependency",
+                    dependencies,
+                    registration.Services.Select(s => ExtractName(s.Description)).ToList());
+
+                // Call the gRPC method asynchronously
+                await RegistrationModule.SendRegistrationInfoAsync().ConfigureAwait(false);
+            }
+
             return ResolveService(context, new TypedService(serviceType), parameters);
+        }
+
+        private static string ExtractName(string description)
+        {
+            var parts = description.Split(',');
+            if (parts.Length > 0)
+            {
+                var name = parts[0];
+                if (name.Contains('`'))
+                {
+                    name = name.Substring(0, name.IndexOf('`'));
+                }
+
+                var nameParts = name.Split('.');
+                return nameParts.Length > 0 ? nameParts[nameParts.Length - 1] : name;
+            }
+
+            return description;
         }
 
         /// <summary>

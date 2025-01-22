@@ -16,11 +16,12 @@ namespace Grpc
             RegistrationInfo = new RegistrationInfo();
         }
 
-        public void UpdateRegistrationInfo(string id, string name, string service, List<string> dependencies, List<string> implementation)
+        public void UpdateRegistrationInfo(Guid id, string component, string service, string lifetime, List<string> dependencies, List<string> implementation)
         {
             RegistrationInfo.Id = id;
-            RegistrationInfo.Name = name;
+            RegistrationInfo.Component = component;
             RegistrationInfo.Service = service;
+            RegistrationInfo.Lifetime = lifetime;
             RegistrationInfo.Dependencies = dependencies;
             RegistrationInfo.Implementations = implementation;
         }

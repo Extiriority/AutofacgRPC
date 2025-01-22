@@ -26,9 +26,10 @@ namespace Grpc
 
             var data = new RegistrationRequest
             {
-                Id = registrationInfo.Id,
-                Name = registrationInfo.Name,
+                Id = registrationInfo.Id.ToString(),
+                Component = registrationInfo.Component,
                 Service = registrationInfo.Service,
+                Lifetime = registrationInfo.Lifetime,
                 Dependencies = { registrationInfo.Dependencies },
                 Implementations = { registrationInfo.Implementations }
             };

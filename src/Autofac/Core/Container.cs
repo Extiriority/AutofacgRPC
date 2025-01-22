@@ -36,6 +36,8 @@ namespace Autofac.Core
         /// <returns>A new lifetime scope.</returns>
         public ILifetimeScope BeginLifetimeScope()
         {
+            //TODO: Rootlifetime meaning beginning to the end. Can be added to the whole process.
+            Console.WriteLine("__Rootlifetime scope__");
             return _rootLifetimeScope.BeginLifetimeScope();
         }
 

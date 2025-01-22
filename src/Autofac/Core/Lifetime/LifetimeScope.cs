@@ -139,6 +139,7 @@ namespace Autofac.Core.Lifetime
         private void RaiseBeginning(ILifetimeScope scope)
         {
             var handler = ChildLifetimeScopeBeginning;
+            Console.WriteLine(">>> Child Lifetime Scope Beginning <<<");
             handler?.Invoke(this, new LifetimeScopeBeginningEventArgs(scope));
         }
 
@@ -287,6 +288,7 @@ namespace Autofac.Core.Lifetime
 
             var operation = new ResolveOperation(this, DiagnosticSource);
             var handler = ResolveOperationBeginning;
+            Console.WriteLine("<> Resolve - Operation Beginning <>");
             handler?.Invoke(this, new ResolveOperationBeginningEventArgs(operation));
             return operation.Execute(request);
         }
@@ -400,7 +402,7 @@ namespace Autofac.Core.Lifetime
             if (disposing)
             {
                 var handler = CurrentScopeEnding;
-
+                Console.WriteLine(" <<< Dispose - Current Scope Ending >>> ");
                 try
                 {
                     handler?.Invoke(this, new LifetimeScopeEndingEventArgs(this));
